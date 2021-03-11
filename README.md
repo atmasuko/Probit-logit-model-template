@@ -1,2 +1,2 @@
-# Probit-model-template
-Coding a probit model in R
+# Probit/logit-model-template
+Coding a probit/logistic model in R
