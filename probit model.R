@@ -1,4 +1,4 @@
-# Devolution
+# Devolution - Empirical Preliminary Findings
 
 # loading required packages
 
@@ -8,19 +8,19 @@ library(jtools)
 library(stargazer)
 library(gridExtra)
 
-# Importing dataset
+# Importing the dataset
 devolution <- read_excel("C:/Users/atmas/Downloads/dev.xlsx")
 
 # constructing probit model
 model_1 <- glm(dev ~ bra, data = devolution, family = binomial(link = "probit"))
 
-# adding control variables
+# adding control variables into the probit model
 model_2 <- glm(dev ~ bra + ira + idn + zas, data = devolution, family = binomial(link = "probit"))
 
-# constructing logit model  
+# constructing logistic model   
 model_3 <- glm(dev ~ bra, data = devolution, family = binomial(link = "logit"))
 
-#adding control variables
+#adding control variables into the logistic model
 model_4 <- glm(dev ~ bra + ira + idn +zas, data = devolution, family = binomial(link = "logit"))
 
 
@@ -35,6 +35,8 @@ stargazer(
           notes.label = "Significance Levels",
           covariate.labels = c("Brazil", "Iran", "Indonesia", "South Africa"))
 
+
+# Visualizing the impact of each country (IV) on Devolution (our Dependent Variable)
 
 bra <- ggplot(data = devolution) + 
   geom_smooth(mapping = aes(x = bra, y = dev), method = "glm") +
@@ -60,21 +62,26 @@ zas <- ggplot(data = devolution) +
        y = " ") +
   theme_minimal()
 
+# Arranging the plots side-by-side
 plots <- grid.arrange(bra, idn, iran, zas, 
              nrow = 2, ncol = 2, 
              left = "Devolution",
              top = "The Impact of a Country on Devolution")
 
+# Saving plots into a pdf file
 ggsave(plots, file = "plots.pdf")
 
+# Running simple OLS models
 lm_bra <- lm(dev ~ bra, data = devolution)
 lm_idn <- lm(dev ~ idn, data = devolution)
 lm_zas <- lm(dev ~ zas, data = devolution)
 lm_iran <- lm(dev ~ ira, data = devolution)
 
+# Plotting OLS' models estimates
 plots2 <- plot_summs(lm_bra, lm_idn, lm_zas, lm_iran,
            scale = TRUE,
            coefs = c("Brazil" = "bra", "Indonesia" = "idn", "South Africa" = "zas", "Iran" = "ira"),
            model.names = c("Brazil", "Indonesia", "South Africa", "Iran"))
 
+# Saving the plots into a .pdf file
 ggsave(plots2, file = "plots_2.pdf")           
